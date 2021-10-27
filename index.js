@@ -18,15 +18,22 @@ async function run() {
         await client.connect();
         const database = client.db("volunteerDB");
         const serviceCollection = database.collection("services");
+        const eventCollection = database.collection('events');
 
-        // get api
+        // get service api
         app.get('/services', async (req, res) => {
             const cursor = serviceCollection.find({});
             const services = await cursor.toArray();
             res.send(services);
         })
+        //get events api
+        app.get('/events', async (req, res) => {
+            const cursor = eventCollection.find({});
+            const events = await cursor.toArray();
+            res.send(events);
+        })
 
-        //get single Api
+        //get single Api by id
         app.get('/services/:id', async (req, res) => {
             const id = req.params.id;
             const query = { _id: ObjectId(id) };
@@ -35,14 +42,19 @@ async function run() {
             res.send(service);
         })
 
+        //Add Events api
+        app.post('/events', async (req, res) => {
+            const event = req.body;
+            console.log(event)
+            const result = await eventCollection.insertOne(event);
+            res.json(result);
+        })
 
     } finally {
         //   await client.close();
     }
 }
 run().catch(console.dir);
-
-
 
 
 app.get('/', (req, res) => {

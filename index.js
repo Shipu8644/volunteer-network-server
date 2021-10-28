@@ -63,7 +63,7 @@ async function run() {
             const id = req.params.id;
             const query = { _id: ObjectId(id) };
             const result = await eventCollection.deleteOne(query);
-            console.log(result);
+
             res.json(result);
         })
 
@@ -82,7 +82,7 @@ async function run() {
                 },
             };
             const result = await eventCollection.updateOne(filter, updateDoc, options);
-            console.log(result);
+
             res.json(result);
 
 

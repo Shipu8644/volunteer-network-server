@@ -26,6 +26,7 @@ async function run() {
             const services = await cursor.toArray();
             res.send(services);
         })
+
         //get events api
         app.get('/events', async (req, res) => {
             const cursor = eventCollection.find({});
@@ -33,32 +34,64 @@ async function run() {
             res.send(events);
         })
 
-        //get single Api by id
+        //get single service Api by id
         app.get('/services/:id', async (req, res) => {
             const id = req.params.id;
             const query = { _id: ObjectId(id) };
             const service = await serviceCollection.findOne(query);
-            console.log(id);
             res.send(service);
-        })
-        //get single Api by name
-        app.get('/services/:name', async (req, res) => {
-            const name = req.params.name;
-            // const query = { _id: ObjectId(id) };
-            // const service = await serviceCollection.findOne(query);
-            console.log("hitted");
-            // res.send(service);
         })
 
         //Add Events api
         app.post('/events', async (req, res) => {
             const event = req.body;
-            console.log(event)
             const result = await eventCollection.insertOne(event);
             res.json(result);
         })
 
-    } finally {
+        //get single event Api by id
+        app.get('/events/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const event = await eventCollection.findOne(query);
+            res.json(event);
+        })
+
+        // delete event from admin
+        //delete Api
+        app.delete('/events/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const result = await eventCollection.deleteOne(query);
+            console.log(result);
+            res.json(result);
+        })
+
+
+        // update status
+        app.put('/events/:id', async (req, res) => {
+            const id = req.params.id;
+            const filter = { _id: ObjectId(id) };
+
+            const event = req.body;
+            console.log(event);
+            const options = { upsert: true };
+            const updateDoc = {
+                $set: {
+                    status: 'Approved'
+                },
+            };
+            const result = await eventCollection.updateOne(filter, updateDoc, options);
+            console.log(result);
+            res.json(result);
+
+
+        })
+
+
+    }
+
+    finally {
         //   await client.close();
     }
 }

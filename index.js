@@ -41,6 +41,14 @@ async function run() {
             console.log(id);
             res.send(service);
         })
+        //get single Api by name
+        app.get('/services/:name', async (req, res) => {
+            const name = req.params.name;
+            // const query = { _id: ObjectId(id) };
+            // const service = await serviceCollection.findOne(query);
+            console.log("hitted");
+            // res.send(service);
+        })
 
         //Add Events api
         app.post('/events', async (req, res) => {

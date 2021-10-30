@@ -20,6 +20,15 @@ async function run() {
         const serviceCollection = database.collection("services");
         const eventCollection = database.collection('events');
 
+        //add Service Api
+        app.post('/services', async (req, res) => {
+            console.log("post hitted")
+            const service = req.body;
+            console.log(service);
+            const result = await serviceCollection.insertOne(service);
+            res.json(result)
+        })
+
         // get service api
         app.get('/services', async (req, res) => {
             const cursor = serviceCollection.find({});
@@ -61,9 +70,9 @@ async function run() {
         //delete Api
         app.delete('/events/:id', async (req, res) => {
             const id = req.params.id;
+            console.log(id)
             const query = { _id: ObjectId(id) };
             const result = await eventCollection.deleteOne(query);
-
             res.json(result);
         })
 
@@ -72,9 +81,6 @@ async function run() {
         app.put('/events/:id', async (req, res) => {
             const id = req.params.id;
             const filter = { _id: ObjectId(id) };
-
-            const event = req.body;
-            console.log(event);
             const options = { upsert: true };
             const updateDoc = {
                 $set: {
@@ -87,7 +93,6 @@ async function run() {
 
 
         })
-
 
     }
 
